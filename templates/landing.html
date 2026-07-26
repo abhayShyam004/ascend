@@ -3,92 +3,169 @@
 
 {% block extra_head %}
 <style>
-    /* HERO SECTION */
-    .hero {
+    /* PINNED SCROLL HERO WRAPPER */
+    .scroll-hero-section {
+        position: relative;
+        width: 100%;
         height: 100vh;
-        min-height: 750px;
+        overflow: hidden;
         background-image: url('{% static "images/background.png" %}');
         background-size: cover;
         background-position: center bottom;
-        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* DARK OVERLAY GRADIENT */
+    .hero-overlay-dark {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 50% 50%, rgba(0,0,0,0.1) 0%, rgba(18,16,16,0.65) 100%);
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .hero-bottom-gradient {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 35vh;
+        background: linear-gradient(to top, rgba(18, 16, 16, 1) 0%, rgba(200, 50, 20, 0.35) 50%, rgba(18, 16, 16, 0) 100%);
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    /* SCENE LAYERS */
+    .scene-viewport {
+        position: absolute;
+        inset: 0;
+        z-index: 5;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: flex-end;
-        padding-bottom: 12vh;
-        text-align: center;
     }
 
-    .hero::before {
-        content: '';
+    /* ROCKET ASSEMBLY */
+    .rocket-assembly {
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: radial-gradient(circle at 50% 40%, rgba(0,0,0,0.05) 0%, rgba(18,16,16,0.5) 100%);
-        z-index: 1;
-        pointer-events: none;
+        bottom: 70px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 10;
+        will-change: transform;
     }
 
-    .hero::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 40vh;
-        background: linear-gradient(to top, rgba(18, 16, 16, 1) 0%, rgba(180, 55, 30, 0.45) 55%, rgba(18, 16, 16, 0) 100%);
-        z-index: 1;
-        pointer-events: none;
-    }
-
-    .hero-content {
+    .rocket-ship {
+        width: 70px;
+        height: auto;
+        filter: drop-shadow(0 0 12px rgba(255, 85, 0, 0.4));
         position: relative;
-        z-index: 2;
-        max-width: 950px;
-        padding: 0 2rem;
+        z-index: 12;
     }
 
-    .badge {
+    /* EXHAUST FLAME TRAIL */
+    .rocket-flame {
+        width: 24px;
+        height: 180px;
+        background: linear-gradient(to bottom, #FFFFFF 0%, #FFCC00 15%, #FF4500 45%, rgba(255, 69, 0, 0.8) 75%, rgba(255, 69, 0, 0) 100%);
+        border-radius: 50% 50% 20% 20%;
+        transform-origin: top center;
+        transform: scaleY(0);
+        opacity: 0;
+        filter: blur(2px) drop-shadow(0 0 25px #FF4500);
+        margin-top: -8px;
+        z-index: 11;
+        will-change: transform, opacity;
+    }
+
+    /* SMOKE PLUMES */
+    .launch-smoke-container {
+        position: absolute;
+        bottom: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        height: 100px;
+        pointer-events: none;
+        z-index: 9;
+    }
+
+    .smoke-puff {
+        position: absolute;
+        background: radial-gradient(circle, rgba(220, 180, 160, 0.8) 0%, rgba(180, 80, 50, 0.4) 50%, rgba(18, 16, 16, 0) 70%);
+        border-radius: 50%;
+        transform: scale(0.2);
+        opacity: 0;
+        filter: blur(12px);
+        will-change: transform, opacity;
+    }
+
+    .smoke-1 { width: 140px; height: 140px; left: 10px; bottom: 0; }
+    .smoke-2 { width: 160px; height: 160px; right: 10px; bottom: 0; }
+    .smoke-3 { width: 180px; height: 180px; left: 60px; bottom: -20px; }
+
+    /* LAUNCHPAD TOWER SILHOUETTE */
+    .launchpad-tower {
+        position: absolute;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 140px;
+        height: 220px;
+        z-index: 8;
+        opacity: 0.85;
+    }
+
+    /* HERO TEXT STAGES */
+    .hero-stage-content {
+        position: relative;
+        z-index: 20;
+        max-width: 900px;
+        padding: 0 2rem;
+        text-align: center;
+        margin-bottom: 25vh;
+    }
+
+    .status-indicator-tag {
         display: inline-flex;
         align-items: center;
         gap: 0.6rem;
-        background: rgba(255, 255, 255, 0.07);
+        background: rgba(30, 25, 25, 0.75);
         backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-        padding: 0.5rem 1.25rem;
+        border: 1px solid rgba(255, 85, 0, 0.3);
+        padding: 0.4rem 1.25rem;
         border-radius: 999px;
         font-size: 0.85rem;
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        margin-bottom: 2.25rem;
-        font-weight: 500;
-        color: rgba(255, 255, 255, 0.95);
-        letter-spacing: 0.04em;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-    }
-    
-    .badge-sparkle {
+        font-weight: 600;
         color: #FF5500;
-        font-size: 1rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 1.75rem;
+        box-shadow: 0 0 20px rgba(255, 85, 0, 0.2);
     }
 
-    .hero h1 {
-        font-size: 5.25rem;
+    .hero-stage-content h1 {
+        font-size: 5rem;
         line-height: 1.05;
-        margin-bottom: 1.75rem;
-        letter-spacing: -0.035em;
-        text-shadow: 0 6px 35px rgba(0,0,0,0.85);
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.03em;
+        text-shadow: 0 6px 35px rgba(0,0,0,0.9);
         font-weight: 400;
     }
 
-    .hero p {
+    .hero-stage-content p {
         font-size: 1.2rem;
-        color: rgba(255, 255, 255, 0.85);
+        color: rgba(255, 255, 255, 0.9);
         max-width: 580px;
-        margin: 0 auto 3rem;
+        margin: 0 auto 2.5rem;
         line-height: 1.6;
-        text-shadow: 0 2px 12px rgba(0,0,0,0.75);
+        text-shadow: 0 2px 12px rgba(0,0,0,0.8);
     }
 
     .hero-ctas {
@@ -105,195 +182,206 @@
         border-radius: 999px;
         font-weight: 600;
         font-size: 1.05rem;
-        transition: transform 0.2s, opacity 0.2s, box-shadow 0.2s;
-        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.12);
+        transition: transform 0.2s, opacity 0.2s;
+        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
     }
 
     .cta-primary:hover {
-        opacity: 0.95;
+        opacity: 0.92;
         transform: translateY(-2px);
-        box-shadow: 0 14px 40px rgba(255, 255, 255, 0.2);
     }
 
     .cta-secondary {
-        background: rgba(255, 255, 255, 0.07);
+        background: rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.18);
         color: #fff;
         padding: 1rem 2.25rem;
         border-radius: 999px;
         font-weight: 500;
         font-size: 1.05rem;
-        transition: background 0.2s, border-color 0.2s, transform 0.2s;
+        transition: background 0.2s, transform 0.2s;
     }
 
     .cta-secondary:hover {
-        background: rgba(255, 255, 255, 0.14);
-        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.15);
         transform: translateY(-2px);
     }
 
-    /* SECTION CONTAINERS */
-    .section-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 8rem 2rem;
-    }
-
-    .section-header {
-        text-align: center;
-        max-width: 650px;
-        margin: 0 auto 5rem;
-    }
-
-    .section-header h2 {
-        font-size: 3.25rem;
-        margin-bottom: 1.25rem;
-        letter-spacing: -0.02em;
-    }
-
-    .section-header p {
-        color: var(--text-muted);
-        font-size: 1.15rem;
-        line-height: 1.6;
-    }
-
-    /* FEATURES GRID SECTION */
-    .features-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 2.5rem;
-    }
-
-    .feature-card {
-        background: rgba(26, 23, 23, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 20px;
-        padding: 3rem 2.25rem;
-        backdrop-filter: blur(10px);
-        transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    /* SCROLL HINT */
+    .scroll-hint-indicator {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 25;
         display: flex;
         flex-direction: column;
-        gap: 1.25rem;
-    }
-
-    .feature-card:hover {
-        transform: translateY(-6px);
-        border-color: rgba(255, 85, 0, 0.4);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    }
-
-    .feature-icon {
-        width: 48px;
-        height: 48px;
-        background: rgba(255, 85, 0, 0.1);
-        border: 1px solid rgba(255, 85, 0, 0.25);
-        border-radius: 12px;
-        display: flex;
         align-items: center;
-        justify-content: center;
-        color: var(--accent-warm);
-    }
-
-    .feature-card h3 {
-        font-size: 1.75rem;
-        font-weight: 500;
-    }
-
-    .feature-card p {
-        color: var(--text-muted);
-        font-size: 1rem;
-        line-height: 1.65;
-    }
-
-    /* WORKFLOW SECTION */
-    .workflow-section {
-        background: radial-gradient(ellipse at center, rgba(40, 20, 20, 0.5) 0%, rgba(18, 16, 16, 0) 70%);
-        border-y: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .workflow-steps {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 2rem;
-        position: relative;
-    }
-
-    .workflow-step {
-        background: rgba(20, 18, 18, 0.8);
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        border-radius: 16px;
-        padding: 2.5rem 2rem;
-        position: relative;
-    }
-
-    .step-number {
-        font-family: var(--font-heading);
-        font-size: 3rem;
-        color: var(--accent-warm);
-        opacity: 0.8;
-        margin-bottom: 1rem;
-    }
-
-    .workflow-step h4 {
-        font-size: 1.4rem;
-        margin-bottom: 0.75rem;
-    }
-
-    .workflow-step p {
-        color: var(--text-muted);
-        font-size: 0.95rem;
-    }
-
-    /* PHILOSOPHY BANNER */
-    .philosophy-banner {
-        text-align: center;
-        padding: 10rem 2rem;
-        background: linear-gradient(180deg, rgba(18, 16, 16, 0) 0%, rgba(35, 20, 18, 0.4) 50%, rgba(18, 16, 16, 0) 100%);
-    }
-
-    .philosophy-banner blockquote {
-        font-family: var(--font-heading);
-        font-size: 3.5rem;
-        line-height: 1.25;
-        max-width: 900px;
-        margin: 0 auto 2rem;
-        color: #F5F5F7;
-        font-style: italic;
-    }
-
-    .philosophy-author {
-        color: var(--accent-warm);
-        font-size: 1.1rem;
-        letter-spacing: 0.1em;
+        gap: 0.5rem;
+        color: rgba(255,255,255,0.6);
+        font-size: 0.75rem;
+        letter-spacing: 0.15em;
         text-transform: uppercase;
-        font-weight: 500;
+        animation: hintPulse 2s infinite;
     }
 
-    @media (max-width: 900px) {
-        .features-grid, .workflow-steps {
-            grid-template-columns: 1fr;
+    @keyframes hintPulse {
+        0%, 100% { opacity: 0.4; transform: translate(-50%, 0); }
+        50% { opacity: 0.9; transform: translate(-50%, 6px); }
+    }
+
+    @media (max-width: 768px) {
+        .hero-stage-content h1 {
+            font-size: 3.2rem;
         }
-        .hero h1 {
-            font-size: 3.5rem;
-        }
-        .philosophy-banner blockquote {
-            font-size: 2.25rem;
+        .rocket-ship {
+            width: 50px;
         }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- HERO SECTION -->
-<main class="hero">
-    <div class="hero-content">
-        <h1>Ascend your daily<br>productivity to the<br>absolute peak</h1>
-        <p>Intelligent priority sequencing and dynamic task management engineered for high achievers.</p>
-        <div class="hero-ctas">
-            <a href="{% url 'todo_list' %}" class="cta-primary">Launch Dashboard</a>
-            <a href="#features" class="cta-secondary">Explore Capabilities</a>
+<div id="scroll-hero-trigger">
+    <main class="scroll-hero-section">
+        <div class="hero-overlay-dark"></div>
+        <div class="hero-bottom-gradient"></div>
+
+        <!-- LAUNCHPAD STRUCTURE -->
+        <svg class="launchpad-tower" viewBox="0 0 100 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M30 160V40H35V160H30ZM65 160V40H70V160H65ZM35 50H65M35 70H65M35 90H65M35 110H65M35 130H65M35 150H65" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+            <path d="M20 160H80" stroke="rgba(255,255,255,0.4)" stroke-width="3"/>
+        </svg>
+
+        <!-- SMOKE PLUMES -->
+        <div class="launch-smoke-container">
+            <div class="smoke-puff smoke-1"></div>
+            <div class="smoke-puff smoke-2"></div>
+            <div class="smoke-puff smoke-3"></div>
         </div>
-    </div>
-</main>
+
+        <!-- ROCKET ASSEMBLY -->
+        <div class="rocket-assembly" id="rocket-assembly">
+            <!-- Sleek Vector Rocket -->
+            <svg class="rocket-ship" viewBox="0 0 60 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Nose Cone -->
+                <path d="M30 0C30 0 45 25 45 45H15C15 25 30 0 30 0Z" fill="#F5F5F7"/>
+                <!-- Rocket Body -->
+                <rect x="16" y="45" width="28" height="50" rx="3" fill="#E1E1E6"/>
+                <!-- Dark Window / Accents -->
+                <circle cx="30" cy="58" r="6" fill="#121010" stroke="#FF5500" stroke-width="2"/>
+                <path d="M16 80H44" stroke="#FF5500" stroke-width="3"/>
+                <!-- Fins -->
+                <path d="M16 70L2 100V105H16V70Z" fill="#C1C1C7"/>
+                <path d="M44 70L58 100V105H44V70Z" fill="#C1C1C7"/>
+                <!-- Engine Nozzle -->
+                <path d="M22 95H38L35 105H25L22 95Z" fill="#44444C"/>
+            </svg>
+            <!-- Exhaust Flame -->
+            <div class="rocket-flame" id="rocket-flame"></div>
+        </div>
+
+        <!-- HERO CONTENT OVERLAY -->
+        <div class="hero-stage-content" id="hero-content">
+            <div class="status-indicator-tag" id="status-tag">
+                ✦ STAGE 01 • READY FOR LAUNCH
+            </div>
+            <h1 id="hero-title">Ascend your daily<br>productivity to the<br>absolute peak</h1>
+            <p id="hero-sub">Intelligent priority sequencing and dynamic task management engineered for high achievers.</p>
+            <div class="hero-ctas" id="hero-ctas">
+                <a href="{% url 'todo_list' %}" class="cta-primary">Launch Dashboard</a>
+                <a href="{% url 'todo_list' %}" class="cta-secondary">Explore Priorities</a>
+            </div>
+        </div>
+
+        <!-- SCROLL PROMPT -->
+        <div class="scroll-hint-indicator" id="scroll-hint">
+            <span>Scroll to Launch</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 5V19M12 19L5 12M12 19L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+    </main>
+</div>
+
+<!-- GSAP SCROLLTRIGGER ANIMATION SCRIPT -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        gsap.registerPlugin(ScrollTrigger);
+
+        const rocket = document.getElementById("rocket-assembly");
+        const flame = document.getElementById("rocket-flame");
+        const statusTag = document.getElementById("status-tag");
+        const smokePuffs = document.querySelectorAll(".smoke-puff");
+        const heroContent = document.getElementById("hero-content");
+        const scrollHint = document.getElementById("scroll-hint");
+
+        // Master Timeline pinned to scroll
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: "#scroll-hero-trigger",
+                start: "top top",
+                end: "+=2200",
+                pin: true,
+                scrub: 1,
+                anticipatePin: 1
+            }
+        });
+
+        // Step 1: Ignition & Smoke Billow (0% -> 20% scroll)
+        tl.to(scrollHint, { opacity: 0, duration: 0.1 }, 0)
+          .to(smokePuffs, {
+              scale: 2.5,
+              opacity: 0.95,
+              stagger: 0.05,
+              duration: 0.3,
+              ease: "power1.out"
+          }, 0)
+          .to(flame, {
+              scaleY: 1,
+              opacity: 1,
+              duration: 0.25,
+              ease: "power2.out"
+          }, 0.1)
+          .to(rocket, {
+              x: "+=2",
+              repeat: 5,
+              yoyo: true,
+              duration: 0.05
+          }, 0.1)
+          .call(() => {
+              if (statusTag) statusTag.textContent = "✦ STAGE 02 • LIFTOFF & ASCENT";
+          }, null, 0.25);
+
+        // Step 2: Main Acceleration & Vertical Liftoff (20% -> 80% scroll)
+        tl.to(rocket, {
+            y: -1100,
+            duration: 1.5,
+            ease: "power2.in"
+        }, 0.25)
+        .to(flame, {
+            scaleY: 3.5,
+            opacity: 0.9,
+            duration: 1.2
+        }, 0.25)
+        .to(smokePuffs, {
+            scale: 4.5,
+            opacity: 0,
+            y: 80,
+            duration: 1.0
+        }, 0.3)
+        .to(heroContent, {
+            y: -40,
+            scale: 1.03,
+            duration: 1.0,
+            ease: "power1.out"
+        }, 0.3);
+
+        // Step 3: Clear Sky / Peak Transition (80% -> 100% scroll)
+        tl.call(() => {
+            if (statusTag) statusTag.textContent = "✦ ORBIT ACHIEVED • PEAK PERFORMANCE";
+        }, null, 0.85);
+    });
+</script>
 {% endblock %}
