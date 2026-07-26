@@ -1,0 +1,346 @@
+{% extends 'base.html' %}
+
+{% block title %}Ascend Workspace - Priorities & Objectives{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<style>
+    body {
+        background: radial-gradient(circle at 50% -10%, #2e110b 0%, #121010 60%);
+        min-height: 100vh;
+    }
+
+    .workspace-wrapper {
+        max-width: 1000px;
+        margin: 160px auto 80px;
+        padding: 0 2rem;
+    }
+
+    /* STATS HEADER BAR */
+    .workspace-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 3.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding-bottom: 2rem;
+    }
+
+    .workspace-title h1 {
+        font-size: 3.75rem;
+        line-height: 1.1;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+    }
+    
+    .workspace-title p {
+        color: var(--text-muted);
+        font-size: 1.15rem;
+    }
+
+    .stats-bar {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .stat-pill {
+        background: rgba(30, 25, 25, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 0.6rem 1.25rem;
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .stat-val {
+        color: #fff;
+        font-weight: 600;
+    }
+
+    /* ADD TASK FORM */
+    .add-task-form {
+        display: flex;
+        gap: 1.25rem;
+        margin-bottom: 3.5rem;
+    }
+
+    .add-task-input {
+        flex: 1;
+        background: rgba(20, 18, 18, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 1.35rem 1.75rem;
+        border-radius: 16px;
+        color: white;
+        font-size: 1.15rem;
+        font-family: var(--font-body);
+        outline: none;
+        transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+        box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
+    }
+
+    .add-task-input:focus {
+        border-color: rgba(255, 85, 0, 0.65);
+        background: rgba(25, 22, 22, 0.95);
+        box-shadow: inset 0 2px 6px rgba(0,0,0,0.4), 0 0 20px rgba(255, 85, 0, 0.15);
+    }
+
+    .add-task-input::placeholder {
+        color: rgba(255, 255, 255, 0.35);
+    }
+
+    .add-task-btn {
+        background: #F5F5F7;
+        color: #121010;
+        border: none;
+        padding: 0 2.5rem;
+        border-radius: 16px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
+    }
+
+    .add-task-btn:hover {
+        opacity: 0.92;
+        transform: translateY(-1px);
+    }
+    
+    .add-task-btn:active {
+        transform: scale(0.98);
+    }
+
+    /* TASK LIST */
+    .task-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .task-item {
+        background: rgba(24, 21, 21, 0.75);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        padding: 1.5rem 2rem;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        cursor: grab;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        position: relative;
+    }
+    
+    .task-item:hover {
+        border-color: rgba(255, 255, 255, 0.2);
+        background: rgba(32, 28, 28, 0.88);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+    
+    .task-item:active {
+        cursor: grabbing;
+    }
+
+    .task-item.sortable-ghost {
+        opacity: 0.3;
+        background: rgba(0,0,0,0.7);
+        border-style: dashed;
+    }
+
+    .task-indicator {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background-color: var(--task-color, #444);
+        flex-shrink: 0;
+        box-shadow: 0 0 20px var(--task-color, transparent);
+        border: 2px solid rgba(255,255,255,0.15);
+        transition: background-color 0.35s ease, box-shadow 0.35s ease;
+    }
+    
+    .task-content {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .task-title {
+        font-size: 1.2rem;
+        font-weight: 400;
+        color: #F5F5F7;
+    }
+
+    .priority-badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: var(--task-color, var(--text-muted));
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+    
+    .task-drag-handle {
+        color: rgba(255,255,255,0.3);
+        cursor: grab;
+        transition: color 0.2s ease;
+        display: flex;
+        align-items: center;
+        padding: 0.25rem;
+    }
+    
+    .task-item:hover .task-drag-handle {
+        color: rgba(255,255,255,0.8);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 5rem 2rem;
+        color: rgba(255,255,255,0.45);
+        border: 1px dashed rgba(255,255,255,0.15);
+        border-radius: 20px;
+        font-size: 1.2rem;
+    }
+
+    @media (max-width: 768px) {
+        .workspace-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.5rem;
+        }
+        .workspace-title h1 {
+            font-size: 2.75rem;
+        }
+        .add-task-form {
+            flex-direction: column;
+        }
+        .add-task-btn {
+            padding: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="workspace-wrapper">
+    <div class="workspace-header">
+        <div class="workspace-title">
+            <h1>Priority Workspace</h1>
+            <p>Drag and reorder your objectives to dictate mission priority.</p>
+        </div>
+        <div class="stats-bar">
+            <div class="stat-pill">
+                Active Objectives: <span class="stat-val" id="total-count">{{ tasks|length }}</span>
+            </div>
+            <div class="stat-pill">
+                Top Priority: <span class="stat-val" id="top-priority-title">{% if tasks %}{{ tasks.0.title }}{% else %}None{% endif %}</span>
+            </div>
+        </div>
+    </div>
+
+    <form class="add-task-form" method="POST" action="{% url 'todo_list' %}">
+        {% csrf_token %}
+        <input type="text" name="title" class="add-task-input" placeholder="Enter high-impact objective..." required autocomplete="off">
+        <button type="submit" class="add-task-btn">Add Objective</button>
+    </form>
+
+    {% if tasks %}
+        <div class="task-list" id="task-list">
+            {% for task in tasks %}
+                <div class="task-item" data-id="{{ task.id }}">
+                    <div class="task-indicator"></div>
+                    <div class="task-content">
+                        <div class="task-title">{{ task.title }}</div>
+                        <div class="priority-badge">RANK #{{ forloop.counter }}</div>
+                    </div>
+                    <div class="task-drag-handle">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 9H16M8 15H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            No active objectives in queue. Enter a mission-critical objective above.
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const list = document.getElementById('task-list');
+        if (list) {
+            function updateColorsAndRankings() {
+                const items = list.querySelectorAll('.task-item');
+                const total = items.length;
+                
+                items.forEach((item, index) => {
+                    // Update rank badge text
+                    const badge = item.querySelector('.priority-badge');
+                    if (badge) {
+                        badge.textContent = index === 0 ? 'P1 • PEAK' : `RANK #${index + 1}`;
+                    }
+
+                    // Calculate color: top item is vivid rocket flame red (#FF3300), fading down to dark slate (#4B5263)
+                    const rStart = 255, gStart = 51, bStart = 0; 
+                    const rEnd = 75, gEnd = 82, bEnd = 99; 
+                    
+                    const ratio = total > 1 ? index / (total - 1) : 0;
+                    const easedRatio = Math.pow(ratio, 0.85);
+                    
+                    const r = Math.round(rStart + (rEnd - rStart) * easedRatio);
+                    const g = Math.round(gStart + (gEnd - gStart) * easedRatio);
+                    const b = Math.round(bStart + (bEnd - bStart) * easedRatio);
+                    
+                    item.style.setProperty('--task-color', `rgb(${r}, ${g}, ${b})`);
+                });
+
+                // Update Top Priority text in header
+                const topVal = document.getElementById('top-priority-title');
+                if (topVal && items.length > 0) {
+                    const firstTitle = items[0].querySelector('.task-title');
+                    if (firstTitle) topVal.textContent = firstTitle.textContent;
+                }
+            }
+
+            updateColorsAndRankings();
+
+            new Sortable(list, {
+                animation: 250,
+                ghostClass: 'sortable-ghost',
+                handle: '.task-item',
+                onEnd: function(evt) {
+                    updateColorsAndRankings();
+                    
+                    const taskIds = Array.from(list.querySelectorAll('.task-item')).map(item => item.dataset.id);
+                    
+                    fetch('{% url "reorder_tasks" %}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({ task_ids: taskIds })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status !== 'success') {
+                            console.error('Failed to update priority', data);
+                        }
+                    })
+                    .catch(err => console.error('Error reordering:', err));
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
