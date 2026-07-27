@@ -6,7 +6,8 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 <style>
     body {
-        background: radial-gradient(circle at 50% -10%, #2e110b 0%, #121010 60%);
+        background: radial-gradient(circle at 50% -10%, #5c2b20 0%, #2a2c38 45%, #1d1e27 100%);
+        background-attachment: fixed;
         min-height: 100vh;
     }
 
@@ -22,7 +23,7 @@
         justify-content: space-between;
         align-items: flex-end;
         margin-bottom: 3.5rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
         padding-bottom: 2rem;
     }
 
@@ -44,11 +45,11 @@
     }
 
     .stat-pill {
-        background: rgba(30, 25, 25, 0.7);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
         padding: 0.6rem 1.25rem;
         border-radius: 12px;
-        backdrop-filter: blur(10px);
+        backdrop-filter: blur(12px);
         font-size: 0.875rem;
         color: var(--text-muted);
         display: flex;
@@ -70,8 +71,9 @@
 
     .add-task-input {
         flex: 1;
-        background: rgba(20, 18, 18, 0.85);
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
         padding: 1.35rem 1.75rem;
         border-radius: 16px;
         color: white;
@@ -79,17 +81,17 @@
         font-family: var(--font-body);
         outline: none;
         transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
-        box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
+        box-shadow: inset 0 2px 6px rgba(0,0,0,0.15);
     }
 
     .add-task-input:focus {
-        border-color: rgba(255, 85, 0, 0.65);
-        background: rgba(25, 22, 22, 0.95);
-        box-shadow: inset 0 2px 6px rgba(0,0,0,0.4), 0 0 20px rgba(255, 85, 0, 0.15);
+        border-color: rgba(255, 85, 0, 0.75);
+        background: rgba(255, 255, 255, 0.12);
+        box-shadow: inset 0 2px 6px rgba(0,0,0,0.15), 0 0 24px rgba(255, 85, 0, 0.2);
     }
 
     .add-task-input::placeholder {
-        color: rgba(255, 255, 255, 0.35);
+        color: rgba(255, 255, 255, 0.45);
     }
 
     .add-task-btn {
@@ -122,9 +124,9 @@
     }
 
     .task-item {
-        background: rgba(24, 21, 21, 0.75);
-        backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.07);
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
         padding: 1.5rem 2rem;
         border-radius: 16px;
         display: flex;
@@ -136,9 +138,9 @@
     }
     
     .task-item:hover {
-        border-color: rgba(255, 255, 255, 0.2);
-        background: rgba(32, 28, 28, 0.88);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        border-color: rgba(255, 255, 255, 0.25);
+        background: rgba(255, 255, 255, 0.14);
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25);
     }
     
     .task-item:active {

@@ -3,176 +3,84 @@
 
 {% block extra_head %}
 <style>
-    /* PINNED SCROLL HERO WRAPPER */
-    .scroll-hero-section {
-        position: relative;
-        width: 100%;
+    .hero {
         height: 100vh;
-        overflow: hidden;
         background-image: url('{% static "images/background.png" %}');
         background-size: cover;
         background-position: center bottom;
+        position: relative;
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-end;
+        padding-bottom: 11vh;
+        text-align: center;
     }
 
-    /* DARK OVERLAY GRADIENT */
-    .hero-overlay-dark {
+    .hero::before {
+        content: '';
         position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 0%, rgba(18,16,16,0.55) 100%);
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 50% 30%, rgba(0,0,0,0.1) 0%, rgba(11,11,13,0.4) 100%);
         z-index: 1;
         pointer-events: none;
     }
 
-    .hero-bottom-gradient {
+    .hero::after {
+        content: '';
         position: absolute;
         bottom: 0;
         left: 0;
         right: 0;
-        height: 30vh;
-        background: linear-gradient(to top, rgba(18, 16, 16, 0.95) 0%, rgba(200, 50, 20, 0.3) 50%, rgba(18, 16, 16, 0) 100%);
+        height: 35vh;
+        background: linear-gradient(to top, rgba(11, 11, 13, 1) 0%, rgba(200, 50, 20, 0.4) 50%, rgba(11, 11, 13, 0) 100%);
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .hero-content {
+        position: relative;
         z-index: 2;
-        pointer-events: none;
+        max-width: 850px;
+        padding: 0 1.5rem;
     }
 
-    /* LAUNCHPAD TOWER SILHOUETTE */
-    .launchpad-tower {
-        position: absolute;
-        bottom: 40px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 180px;
-        height: 260px;
-        z-index: 8;
-        opacity: 0.9;
-    }
-
-    /* ROCKET ASSEMBLY */
-    .rocket-assembly {
-        position: absolute;
-        bottom: 75px;
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        z-index: 15;
-        will-change: transform;
-    }
-
-    .rocket-ship {
-        width: 90px;
-        height: auto;
-        filter: drop-shadow(0 0 20px rgba(255, 85, 0, 0.5));
-        position: relative;
-        z-index: 12;
-    }
-
-    /* EXHAUST FLAME TRAIL */
-    .rocket-flame {
-        width: 32px;
-        height: 240px;
-        background: linear-gradient(to bottom, #FFFFFF 0%, #FFCC00 15%, #FF4500 45%, rgba(255, 69, 0, 0.85) 75%, rgba(255, 69, 0, 0) 100%);
-        border-radius: 50% 50% 20% 20%;
-        transform-origin: top center;
-        transform: scaleY(0);
-        opacity: 0;
-        filter: blur(2px) drop-shadow(0 0 35px #FF4500);
-        margin-top: -10px;
-        z-index: 11;
-        will-change: transform, opacity;
-    }
-
-    /* SMOKE PLUMES */
-    .launch-smoke-container {
-        position: absolute;
-        bottom: 45px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 400px;
-        height: 120px;
-        pointer-events: none;
-        z-index: 9;
-    }
-
-    .smoke-puff {
-        position: absolute;
-        background: radial-gradient(circle, rgba(230, 190, 170, 0.85) 0%, rgba(190, 80, 40, 0.5) 50%, rgba(18, 16, 16, 0) 75%);
-        border-radius: 50%;
-        transform: scale(0.2);
-        opacity: 0;
-        filter: blur(15px);
-        will-change: transform, opacity;
-    }
-
-    .smoke-1 { width: 180px; height: 180px; left: 0; bottom: 0; }
-    .smoke-2 { width: 200px; height: 200px; right: 0; bottom: 0; }
-    .smoke-3 { width: 220px; height: 220px; left: 90px; bottom: -30px; }
-
-    /* HERO TEXT OVERLAY */
-    .hero-stage-content {
-        position: relative;
-        z-index: 20;
-        max-width: 900px;
-        padding: 0 2rem;
-        text-align: center;
-        margin-bottom: 28vh;
-    }
-
-    .status-indicator-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.6rem;
-        background: rgba(25, 20, 20, 0.85);
-        backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 85, 0, 0.4);
-        padding: 0.5rem 1.35rem;
-        border-radius: 999px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #FF5500;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        margin-bottom: 2rem;
-        box-shadow: 0 0 25px rgba(255, 85, 0, 0.25);
-    }
-
-    .hero-stage-content h1 {
-        font-size: 5.25rem;
+    .hero h1 {
+        font-size: 4.75rem;
         line-height: 1.05;
         margin-bottom: 1.5rem;
-        letter-spacing: -0.035em;
-        text-shadow: 0 6px 40px rgba(0,0,0,0.95);
+        letter-spacing: -0.03em;
+        text-shadow: 0 4px 30px rgba(0,0,0,0.8);
         font-weight: 400;
     }
 
-    .hero-stage-content p {
-        font-size: 1.25rem;
-        color: rgba(255, 255, 255, 0.9);
-        max-width: 580px;
+    .hero p {
+        font-size: 1.15rem;
+        color: rgba(255, 255, 255, 0.85);
+        max-width: 540px;
         margin: 0 auto 2.5rem;
-        line-height: 1.6;
-        text-shadow: 0 2px 14px rgba(0,0,0,0.85);
+        line-height: 1.55;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.7);
     }
 
     .hero-ctas {
         display: flex;
-        gap: 1.25rem;
+        gap: 1rem;
         justify-content: center;
         align-items: center;
     }
 
     .cta-primary {
-        background: #F5F5F7;
-        color: #121010;
-        padding: 1rem 2.25rem;
-        border-radius: 999px;
+        background: #F3F4F6;
+        color: #0b0b0d;
+        padding: 0.9rem 2rem;
+        border-radius: 10px;
         font-weight: 600;
-        font-size: 1.05rem;
-        transition: transform 0.2s, opacity 0.2s;
-        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
+        font-size: 1rem;
+        transition: transform 0.15s, opacity 0.15s;
     }
 
     .cta-primary:hover {
@@ -182,195 +90,45 @@
 
     .cta-secondary {
         background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
         color: #fff;
-        padding: 1rem 2.25rem;
-        border-radius: 999px;
+        padding: 0.9rem 2rem;
+        border-radius: 10px;
         font-weight: 500;
-        font-size: 1.05rem;
-        transition: background 0.2s, transform 0.2s;
+        font-size: 1rem;
+        transition: background 0.15s, border-color 0.15s;
     }
 
     .cta-secondary:hover {
         background: rgba(255, 255, 255, 0.15);
-        transform: translateY(-2px);
-    }
-
-    /* SCROLL PROMPT */
-    .scroll-hint-indicator {
-        position: absolute;
-        bottom: 2rem;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 25;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.5rem;
-        color: rgba(255,255,255,0.7);
-        font-size: 0.8rem;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-        animation: hintPulse 2s infinite;
-    }
-
-    @keyframes hintPulse {
-        0%, 100% { opacity: 0.5; transform: translate(-50%, 0); }
-        50% { opacity: 1; transform: translate(-50%, 8px); }
+        border-color: rgba(255, 255, 255, 0.3);
     }
 
     @media (max-width: 768px) {
-        .hero-stage-content h1 {
+        .hero h1 {
             font-size: 3.2rem;
         }
-        .rocket-ship {
-            width: 65px;
+        .hero-ctas {
+            flex-direction: column;
+            width: 100%;
+        }
+        .cta-primary, .cta-secondary {
+            width: 100%;
         }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div id="scroll-hero-trigger">
-    <main class="scroll-hero-section">
-        <div class="hero-overlay-dark"></div>
-        <div class="hero-bottom-gradient"></div>
-
-        <!-- LAUNCHPAD TOWER SILHOUETTE -->
-        <svg class="launchpad-tower" viewBox="0 0 100 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M30 160V30H35V160H30ZM65 160V30H70V160H65ZM35 40H65M35 60H65M35 80H65M35 100H65M35 120H65M35 140H65" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
-            <path d="M15 160H85" stroke="rgba(255,255,255,0.5)" stroke-width="4"/>
-        </svg>
-
-        <!-- SMOKE PLUMES -->
-        <div class="launch-smoke-container">
-            <div class="smoke-puff smoke-1"></div>
-            <div class="smoke-puff smoke-2"></div>
-            <div class="smoke-puff smoke-3"></div>
+<main class="hero">
+    <div class="hero-content">
+        <h1>Ascend your daily<br>productivity to the<br>absolute peak</h1>
+        <p>Intelligent priority sequencing and dynamic task management engineered for high achievers.</p>
+        <div class="hero-ctas">
+            <a href="{% url 'todo_list' %}" class="cta-primary">Launch Dashboard</a>
+            <a href="{% url 'todo_list' %}" class="cta-secondary">Explore Priorities</a>
         </div>
-
-        <!-- ROCKET ASSEMBLY -->
-        <div class="rocket-assembly" id="rocket-assembly">
-            <!-- Vector Rocket -->
-            <svg class="rocket-ship" viewBox="0 0 60 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Nose Cone -->
-                <path d="M30 0C30 0 45 25 45 45H15C15 25 30 0 30 0Z" fill="#F5F5F7"/>
-                <!-- Rocket Body -->
-                <rect x="16" y="45" width="28" height="50" rx="3" fill="#E1E1E6"/>
-                <!-- Dark Window / Accents -->
-                <circle cx="30" cy="58" r="6" fill="#121010" stroke="#FF5500" stroke-width="2.5"/>
-                <path d="M16 80H44" stroke="#FF5500" stroke-width="3"/>
-                <!-- Fins -->
-                <path d="M16 70L2 100V105H16V70Z" fill="#C1C1C7"/>
-                <path d="M44 70L58 100V105H44V70Z" fill="#C1C1C7"/>
-                <!-- Engine Nozzle -->
-                <path d="M22 95H38L35 105H25L22 95Z" fill="#33333A"/>
-            </svg>
-            <!-- Exhaust Flame -->
-            <div class="rocket-flame" id="rocket-flame"></div>
-        </div>
-
-        <!-- HERO CONTENT OVERLAY -->
-        <div class="hero-stage-content" id="hero-content">
-            <div class="status-indicator-tag" id="status-tag">
-                ✦ STAGE 01 • READY FOR LAUNCH
-            </div>
-            <h1 id="hero-title">Ascend your daily<br>productivity to the<br>absolute peak</h1>
-            <p id="hero-sub">Intelligent priority sequencing and dynamic task management engineered for high achievers.</p>
-            <div class="hero-ctas" id="hero-ctas">
-                <a href="{% url 'todo_list' %}" class="cta-primary">Launch Dashboard</a>
-                <a href="{% url 'todo_list' %}" class="cta-secondary">Explore Priorities</a>
-            </div>
-        </div>
-
-        <!-- SCROLL PROMPT -->
-        <div class="scroll-hint-indicator" id="scroll-hint">
-            <span>Scroll Down to Launch</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 5V19M12 19L5 12M12 19L19 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        </div>
-    </main>
-</div>
-
-<!-- GSAP SCROLLTRIGGER ANIMATION SCRIPT -->
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        gsap.registerPlugin(ScrollTrigger);
-
-        const rocket = document.getElementById("rocket-assembly");
-        const flame = document.getElementById("rocket-flame");
-        const statusTag = document.getElementById("status-tag");
-        const smokePuffs = document.querySelectorAll(".smoke-puff");
-        const heroContent = document.getElementById("hero-content");
-        const scrollHint = document.getElementById("scroll-hint");
-
-        // Master Timeline pinned to scroll
-        const tl = gsap.timeline({
-            scrollTrigger: {
-                trigger: "#scroll-hero-trigger",
-                start: "top top",
-                end: "+=2400",
-                pin: true,
-                scrub: 1,
-                anticipatePin: 1
-            }
-        });
-
-        // Step 1: Ignition & Smoke Billow (0% -> 20% scroll)
-        tl.to(scrollHint, { opacity: 0, duration: 0.1 }, 0)
-          .to(smokePuffs, {
-              scale: 2.8,
-              opacity: 0.95,
-              stagger: 0.05,
-              duration: 0.35,
-              ease: "power1.out"
-          }, 0)
-          .to(flame, {
-              scaleY: 1.2,
-              opacity: 1,
-              duration: 0.3,
-              ease: "power2.out"
-          }, 0.1)
-          .to(rocket, {
-              x: "+=2.5",
-              repeat: 5,
-              yoyo: true,
-              duration: 0.05
-          }, 0.1)
-          .call(() => {
-              if (statusTag) statusTag.textContent = "✦ STAGE 02 • LIFTOFF & ASCENT";
-          }, null, 0.25);
-
-        // Step 2: Main Acceleration & Vertical Liftoff (20% -> 80% scroll)
-        tl.to(rocket, {
-            y: -1300,
-            duration: 1.6,
-            ease: "power2.in"
-        }, 0.25)
-        .to(flame, {
-            scaleY: 4.2,
-            opacity: 0.95,
-            duration: 1.3
-        }, 0.25)
-        .to(smokePuffs, {
-            scale: 5.0,
-            opacity: 0,
-            y: 90,
-            duration: 1.1
-        }, 0.3)
-        .to(heroContent, {
-            y: -50,
-            scale: 1.03,
-            duration: 1.1,
-            ease: "power1.out"
-        }, 0.3);
-
-        // Step 3: Clear Sky / Peak Transition (80% -> 100% scroll)
-        tl.call(() => {
-            if (statusTag) statusTag.textContent = "✦ ORBIT ACHIEVED • PEAK PERFORMANCE";
-        }, null, 0.85);
-    });
-</script>
+    </div>
+</main>
 {% endblock %}
